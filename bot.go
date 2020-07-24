@@ -61,7 +61,7 @@ func main() {
 	//コマンド側でエラーがおきたときはこのブロック
 	if err != nil {
 		fmt.Println(err)
-    os.Stderr.Write(stderr.Bytes())
+		os.Stderr.Write(stderr.Bytes())
 		os.Exit(1)
 	}
 
