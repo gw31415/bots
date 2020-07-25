@@ -9,3 +9,6 @@ edition = "2018"
 [dependencies]
 miller_rabin = "1.0.6"
 protobuf = "2.16.2"
+
+[build-dependencies]
+protoc-rust = "2.0"
