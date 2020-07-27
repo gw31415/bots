@@ -1,0 +1,25 @@
+syntax = "proto3";
+package proto;
+
+message Input {
+  repeated Media media = 1;
+}
+
+message Media {
+  //データタイプ
+  enum MediaType{
+    UNKNOWN = 0;
+    EXTEND = 1; //データタイプの決定を先伸ばし, 直後のデータと連結する
+    UTF8 = 2; //文字列
+    FILE = 3; //ファイル
+    FILE_URL = 4; //ファイルのURL
+  }
+  MediaType type = 1;
+
+  //データ本体
+  bytes data = 2;
+  //ファイル名, 拡張子あり, ファイルタイプは拡張子で判断
+  string filename = 3;
+
+  //識別番号4-7はcmdout/Mediaとの統合の可能性を考慮して確保しておく
+}

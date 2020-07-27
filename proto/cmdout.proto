@@ -18,25 +18,24 @@ message Media{
   //データタイプ
   enum MediaType{
     UNKNOWN = 0;
-    UTF8 = 1; //文字列
-    JPEG = 2; //JPEG
-    JPEG_URL = 3; //JPEGのURL
+    EXTEND = 1; //データタイプの決定を先伸ばし, 直後のデータと連結する
+    UTF8 = 2; //文字列
+    FILE = 3; //ファイル
+    FILE_URL = 4; //ファイルのURL
   }
   MediaType type = 1;
 
-
   //データ本体
   bytes data = 2;
-  //ファイル名
+  //ファイル名, 拡張子あり, ファイルタイプは拡張子で判断
   string filename = 3;
 
-  //次のMediaが同じフィールドかどうか
-  bool stay_field = 4;
+  //直後のデータに同フィールドが続くかどうか
+  bool extend_field = 4;
   /*見出しレベル
     0は通常, 1最も強調, 2,3,...と準じる
    */
   int32 level = 5;
-
 
   //エラーコード, 0ならエラーなし
   uint32 error = 6;
