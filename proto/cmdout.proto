@@ -1,0 +1,45 @@
+syntax = "proto3";
+package proto;
+
+//実際にコマンドから出力されるオブジェクトの型
+message Output {
+  repeated BotMsg msgs = 1;
+}
+
+//発言ひとつ分
+message BotMsg {
+  repeated Media medias = 1;
+  bool embed_recommended = 2;
+}
+
+//データ
+message Media{
+
+  //データタイプ
+  enum MediaType{
+    UNKNOWN = 0;
+    UTF8 = 1; //文字列
+    JPEG = 2; //JPEG
+    JPEG_URL = 3; //JPEGのURL
+  }
+  MediaType type = 1;
+
+
+  //データ本体
+  bytes data = 2;
+  //ファイル名
+  string filename = 3;
+
+  //次のMediaが同じフィールドかどうか
+  bool stay_field = 4;
+  /*見出しレベル
+    0は通常, 1最も強調, 2,3,...と準じる
+   */
+  int32 level = 5;
+
+
+  //エラーコード, 0ならエラーなし
+  uint32 error = 6;
+  //隠せるなら隠すかどうか
+  bool spoiled = 7;
+}
