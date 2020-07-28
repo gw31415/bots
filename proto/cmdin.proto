@@ -12,7 +12,6 @@ message Media {
     EXTEND = 1; //データタイプの決定を先伸ばし, 直後のデータと連結する
     UTF8 = 2; //文字列
     FILE = 3; //ファイル
-    FILE_URL = 4; //ファイルのURL
   }
   MediaType type = 1;
 
