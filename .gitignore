@@ -1,3 +1,2 @@
-bin
-test/test
-bin_src/prime/target
+example/btcmder/btcmder
+example/bin_src/prime/target
