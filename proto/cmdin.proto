@@ -2,10 +2,10 @@ syntax = "proto3";
 package proto;
 
 message Input {
-  repeated Media media = 1;
+  repeated InputMedia media = 1;
 }
 
-message Media {
+message InputMedia {
   //データタイプ
   enum MediaType{
     UNKNOWN = 0;

@@ -8,12 +8,12 @@ message Output {
 
 //発言ひとつ分
 message BotMsg {
-  repeated Media medias = 1;
+  repeated OutputMedia medias = 1;
   bool embed_recommended = 2;
 }
 
 //データ
-message Media{
+message OutputMedia{
 
   //データタイプ
   enum MediaType{
