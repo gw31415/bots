@@ -13,11 +13,11 @@
 3. 読みこみディレクトリにはコマンドの他のファイルを配置しない.
 4. ある特定のコマンドを呼びだす操作は, 引数なしで呼びだすコマンドを実行することによって行なわれる.
 5. ある特定のコマンドのヘルプを呼びだす操作は, ただひとつの引数 `--help` または `-h` で呼びだすコマンドを実行することによって行なわれる.
-6. コマンドのヘルプは, `proto/help.proto` に基づきシリアライズされている.
+6. コマンドのヘルプは, [proto/help.proto](https://github.com/gw31415/bots/blob/master/proto/help.proto) に基づきシリアライズされている.
 7. コマンドへの入力は, コマンドの実行中に標準入力に書きこむ.
-8. コマンドの入力は `proto/cmdin.proto` に基づきシリアライズされている.
+8. コマンドの入力は [proto/cmdin.proto](https://github.com/gw31415/bots/blob/master/proto/cmdin.proto) に基づきシリアライズされている.
 9. コマンドの出力は, コマンドの実行中に標準出力から読みこむ.
-10. コマンドの出力は `proto/cmdout.proto` に基づきシリアライズされている.
+10. コマンドの出力は [proto/cmdout.proto](https://github.com/gw31415/bots/blob/master/proto/cmdout.proto) に基づきシリアライズされている.
 
 ### コマンド
 1. 実行ファイルとする.
@@ -25,8 +25,8 @@
 3. コマンド名の全体は `\w+` に適合する.
 4. コマンドの通常動作は引数なしで呼びだされると行なわれる.
 5. コマンドのヘルプを呼びだす操作は, ただひとつの引数 `--help` または `-h` で呼びだすコマンドを実行することによって行なわれる.
-6. コマンドのヘルプは, `proto/help.proto` に基づきシリアライズされている.
+6. コマンドのヘルプは, [proto/help.proto](https://github.com/gw31415/bots/blob/master/proto/help.proto) に基づきシリアライズされている.
 7. コマンドへの入力は, コマンドの実行中に標準入力に書きこむ.
-8. コマンドの入力は `proto/cmdin.proto` に基づきシリアライズされている.
+8. コマンドの入力は [proto/cmdin.proto](https://github.com/gw31415/bots/blob/master/proto/cmdin.proto) に基づきシリアライズされている.
 9. コマンドの出力は, コマンドの実行中に標準出力から読みこむ.
-10. コマンドの出力は `proto/cmdout.proto` に基づきシリアライズされている.
+10. コマンドの出力は [proto/cmdout.proto](https://github.com/gw31415/bots/blob/master/proto/cmdout.proto) に基づきシリアライズされている.
