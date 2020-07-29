@@ -10,6 +10,8 @@ message Output {
 message BotMsg {
   repeated OutputMedia medias = 1;
   bool embed_recommended = 2;
+  //カラーコード、最上位のバイトは無視
+  uint32 color = 3;
 }
 
 //データ
