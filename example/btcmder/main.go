@@ -12,19 +12,6 @@ import (
 	"regexp"
 )
 
-/*
-bots/
- ├-bin/          (ここに各コマンドに対応する実行ファイルが格納される)
- ├-proto/        (protobufの定義ファイルたち)
- ├-for_discord*  (各実装)
- └-for_line*     (各実装)
-
-各実装とコマンドは標準入出力でやりとりする
-コマンドへの入力は文字列(コマンドの引数にあたる)
-コマンドからの出力はprotobufによってシリアライズされたバイト列
-
-*/
-
 const bindir_name = "bin"
 
 var pb2json = jsonpb.Marshaler{Indent: "    "}
@@ -39,7 +26,7 @@ func main() {
 	wd, err := os.Getwd()
 	if err != nil {
 		panic("unknown error.\n")
-	}
+  }
 
 	//呼びだすコマンドを設定
 	//同一ディレクトリのbin内の実行ファイルからCmd構造体を作成
