@@ -12,14 +12,20 @@ import (
 var stdin = bufio.NewScanner(os.Stdin)
 
 func main() {
+	
+	//標準入力から全てバイト列で読み込む
 	arg, err := ioutil.ReadAll(os.Stdin)
 	if err != nil {
 		panic(err)
 	}
+	
+	//バイト列をデシリアライズして扱えるようにする
 	in_pb := &pb.Input{}
 	if err := proto.Unmarshal(arg, in_pb); err != nil {
 		panic(err)
 	}
+	
+	//出力データをまとめる
 	out_pb := &pb.Output{
 		Msgs: []*pb.BotMsg{
 			{
@@ -32,9 +38,14 @@ func main() {
 			},
 		},
 	}
+	
+	//シリアライズしてバイト列にする
 	out, err := proto.Marshal(out_pb)
 	if err != nil {
 		panic(err)
 	}
+	
+	//出力
 	os.Stdout.Write(out)
+
 }
