@@ -6,6 +6,7 @@ import (
 	"github.com/golang/protobuf/jsonpb"
 	"github.com/golang/protobuf/proto"
 	pb "github.com/gw31415/bots/proto"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -26,7 +27,7 @@ func main() {
 	wd, err := os.Getwd()
 	if err != nil {
 		panic("unknown error.\n")
-  }
+	}
 
 	//呼びだすコマンドを設定
 	//同一ディレクトリのbin内の実行ファイルからCmd構造体を作成
@@ -40,10 +41,37 @@ func main() {
 	cmd.Stderr = stderr
 
 	//入力文字列は, 今回はシェルの標準入力から流してくる
-	cmd.Stdin = os.Stdin
+	arg, err := ioutil.ReadAll(os.Stdin)
+	if err != nil {
+		panic(err)
+	}
+
+	in_pb := &pb.Input{
+		Media: []*pb.InputMedia{
+			{
+				Data: arg,
+				Type: pb.InputMedia_UTF8,
+			},
+		},
+	}
+
+  data, err := proto.Marshal(in_pb)
+	if err != nil {
+		panic(err)
+	}
 
 	//実行&待機
-	err = cmd.Run()
+  stdin, err := cmd.StdinPipe()
+	if err != nil {
+		panic(err)
+  }
+	err = cmd.Start()
+	if err != nil {
+		panic(err)
+  }
+  stdin.Write(data)
+  stdin.Close()
+	cmd.Wait()
 
 	//コマンド側でエラーがおきたときはこのブロック
 	if err != nil {
