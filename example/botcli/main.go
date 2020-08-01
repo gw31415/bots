@@ -46,6 +46,7 @@ func main() {
 		panic(err)
 	}
 
+	//文字列でメッセージをつくる
 	in_pb := &pb.Input{
 		Media: []*pb.InputMedia{
 			{
@@ -55,22 +56,23 @@ func main() {
 		},
 	}
 
-  data, err := proto.Marshal(in_pb)
+	//メッセージのシリアライズ
+	data, err := proto.Marshal(in_pb)
 	if err != nil {
 		panic(err)
 	}
 
-	//実行&待機
-  stdin, err := cmd.StdinPipe()
+	stdin, err := cmd.StdinPipe()
 	if err != nil {
 		panic(err)
-  }
+	}
+	//実行&待機
 	err = cmd.Start()
 	if err != nil {
 		panic(err)
-  }
-  stdin.Write(data)
-  stdin.Close()
+	}
+	stdin.Write(data)
+	stdin.Close()
 	cmd.Wait()
 
 	//コマンド側でエラーがおきたときはこのブロック
