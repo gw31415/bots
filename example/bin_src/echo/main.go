@@ -22,18 +22,27 @@ func main() {
 		panic(err)
 	}
 
-	//出力データをまとめる
-	out_pb := &pb.Output{
-		Msgs: []*pb.BotMsg{
-			{
-				Medias: []*pb.OutputMedia{
-					{
-						Data: in_pb.Media[0].Data,
-						Type: pb.OutputMedia_UTF8,
+	msgs := []*pb.BotMsg{}
+
+	//文字列データを抽出して追加
+	for _, m := range in_pb.Media {
+		if m.Type == pb.InputMedia_UTF8 {
+			msgs = append(msgs,
+				&pb.BotMsg{
+					Medias: []*pb.OutputMedia{
+						{
+							Data: in_pb.Media[0].Data,
+							Type: pb.OutputMedia_UTF8,
+						},
 					},
 				},
-			},
-		},
+			)
+		}
+	}
+
+	//出力データとしてまとめる
+	out_pb := &pb.Output{
+		Msgs: msgs,
 	}
 
 	//シリアライズしてバイト列にする
