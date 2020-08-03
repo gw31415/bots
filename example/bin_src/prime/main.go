@@ -16,6 +16,24 @@ const (
 
 func main() {
 
+	if os.Args[1] == "-h" || os.Args[1] == "--help" {
+		help := pb.Help{
+			Usage:            "[Numbers]",
+			ShortDescription: "Prime checking",
+			LongDescription:  "Check whether the given numbers are prime or not.",
+		}
+
+		//シリアライズしてバイト列にする
+		out, err := proto.Marshal(&help)
+		if err != nil {
+			panic(err)
+		}
+
+		//出力
+		os.Stdout.Write(out)
+		return
+	}
+
 	//標準入力から全てバイト列で読み込む
 	arg, err := ioutil.ReadAll(os.Stdin)
 	if err != nil {
