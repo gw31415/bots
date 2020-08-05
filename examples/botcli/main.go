@@ -16,7 +16,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 package main
 
-import "github.com/gw31415/examples/botcli/cmd"
+import "github.com/gw31415/bots/examples/botcli/cmd"
 
 func main() {
 	cmd.Execute()
