@@ -10,11 +10,14 @@ import (
 
 func main() {
 
-	if os.Args[1] == "-h" || os.Args[1] == "--help" {
-		help := pb.Help{
-			Usage:            "[MESSAGE]",
-			ShortDescription: "Echo messages",
-			LongDescription:  "Repeat gived messages.",
+	if len(os.Args) > 1 {
+		var help pb.Help
+		if os.Args[1] == "-h" || os.Args[1] == "--help" {
+			help = pb.Help{
+				Usage:            "[MESSAGE]",
+				ShortDescription: "Echo messages",
+				LongDescription:  "Repeat gived messages.",
+			}
 		}
 
 		//シリアライズしてバイト列にする

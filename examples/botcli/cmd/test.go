@@ -14,20 +14,22 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+
 package cmd
 
 import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/golang/protobuf/jsonpb"
-	"github.com/golang/protobuf/proto"
-	pb "github.com/gw31415/bots/proto"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"regexp"
+
+	"github.com/golang/protobuf/jsonpb"
+	"github.com/golang/protobuf/proto"
+	pb "github.com/gw31415/bots/proto"
 
 	"github.com/spf13/cobra"
 )
@@ -49,7 +51,7 @@ var testCmd = &cobra.Command{
 		if len(args) != 1 {
 			return errors.New("one cmd name is required.")
 		}
-		if !regexp.MustCompile(`\w+`).Match([]byte(args[1])) {
+		if !regexp.MustCompile(`\w+`).Match([]byte(args[0])) {
 			return errors.New("\\w+\n")
 		}
 		wd, err := os.Getwd()
@@ -78,6 +80,7 @@ var testCmd = &cobra.Command{
 		if json_in {
 			return errors.New("json input is not supported yet.")
 		} else {
+
 			//文字列でメッセージをつくる
 			in_pb := &pb.Input{
 				Media: []*pb.InputMedia{
@@ -93,18 +96,19 @@ var testCmd = &cobra.Command{
 			if err != nil {
 				return err
 			}
-
-			//実行&待機
-			err = botcmd.Start()
-			if err != nil {
-				return err
-			}
-
 		}
+
 		stdin, err := botcmd.StdinPipe()
 		if err != nil {
 			return err
 		}
+
+		//実行&待機
+		err = botcmd.Start()
+		if err != nil {
+			return err
+		}
+
 		stdin.Write(data)
 		stdin.Close()
 		botcmd.Wait()
@@ -126,11 +130,13 @@ var testCmd = &cobra.Command{
 			//protobufをjsonにして標準出力に表示
 			pb2json.Marshal(os.Stdout, msg_pb)
 		} else {
+			fmt.Println()
 			for _, msg := range msg_pb.Msgs {
 				for _, media := range msg.Medias {
 					switch media.Type {
 					case pb.OutputMedia_UTF8:
-						fmt.Println(media.Data)
+						fmt.Printf("UTF8: `%s`", string(media.Data))
+						fmt.Println()
 					}
 				}
 				fmt.Println()
