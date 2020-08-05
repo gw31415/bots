@@ -1,7 +1,14 @@
 #!/usr/bin/env python
-from sys import stdin, stdout
+from sys import stdin, stdout, argv, exit
 from proto import cmdin_pb2, cmdout_pb2, help_pb2
 from sympy import latex, parse_expr
+if argv[1] == "--help" or argv[1] == "-h":
+    hp = help_pb2.Help()
+    hp.usage = "[expr]"
+    hp.short_description = "Parse expr of sympy"
+    hp.long_description = "Parse and simplify expr of sympy"
+    stdout.buffer.write(hp.SerializeToString())
+    exit(0)
 stdin = stdin.buffer.read()
 in_pb = cmdin_pb2.Input()
 in_pb.ParseFromString(stdin)
