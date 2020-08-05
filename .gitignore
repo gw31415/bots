@@ -1,2 +1,4 @@
 examples/botcli/bin
 examples/botcli/botcli
+**/__pycache__
+**/.vscode

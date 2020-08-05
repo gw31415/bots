@@ -1,92 +1,23 @@
+/*
+Copyright © 2020 Amadeus_vn
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
 package main
 
-import (
-	"bytes"
-	"fmt"
-	"github.com/golang/protobuf/jsonpb"
-	"github.com/golang/protobuf/proto"
-	pb "github.com/gw31415/bots/proto"
-	"io/ioutil"
-	"os"
-	"os/exec"
-	"path/filepath"
-	"regexp"
-)
-
-const bindir_name = "bin"
-
-var pb2json = jsonpb.Marshaler{Indent: "    "}
+import "github.com/gw31415/bots/examples/botcli/cmd"
 
 func main() {
-	if len(os.Args) != 2 {
-		panic("cmd name is required.")
-	}
-	if !regexp.MustCompile(`\w+`).Match([]byte(os.Args[1])) {
-		panic("\\w+\n")
-	}
-	wd, err := os.Getwd()
-	if err != nil {
-		panic("unknown error.\n")
-	}
-
-	//呼びだすコマンドを設定
-	//同一ディレクトリのbin内の実行ファイルからCmd構造体を作成
-	cmd := exec.Command(filepath.Join(wd, bindir_name, os.Args[1]))
-
-	//シリアライズされた出力はここに流しこむ
-	out := bytes.NewBuffer([]byte{})
-	cmd.Stdout = out
-	//エラー出力はこっち
-	stderr := bytes.NewBuffer([]byte{})
-	cmd.Stderr = stderr
-
-	//入力文字列は, 今回はシェルの標準入力から流してくる
-	arg, err := ioutil.ReadAll(os.Stdin)
-	if err != nil {
-		panic(err)
-	}
-
-	//文字列でメッセージをつくる
-	in_pb := &pb.Input{
-		Media: []*pb.InputMedia{
-			{
-				Data: arg,
-				Type: pb.InputMedia_UTF8,
-			},
-		},
-	}
-
-	//メッセージのシリアライズ
-	data, err := proto.Marshal(in_pb)
-	if err != nil {
-		panic(err)
-	}
-
-	stdin, err := cmd.StdinPipe()
-	if err != nil {
-		panic(err)
-	}
-	//実行&待機
-	err = cmd.Start()
-	if err != nil {
-		panic(err)
-	}
-	stdin.Write(data)
-	stdin.Close()
-	cmd.Wait()
-
-	//コマンド側でエラーがおきたときはこのブロック
-	if err != nil {
-		fmt.Println(err)
-		os.Stderr.Write(stderr.Bytes())
-		os.Exit(1)
-	}
-
-	//ここで宣言したmsg_pbにバイト配列から変換された出力がぶっこまれる
-	msg_pb := &pb.Output{}
-	if err := proto.Unmarshal(out.Bytes(), msg_pb); err != nil {
-		os.Exit(1)
-	}
-	//今回はprotobufをjsonにして標準出力に表示
-	pb2json.Marshal(os.Stdout, msg_pb)
+	cmd.Execute()
 }

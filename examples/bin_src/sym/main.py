@@ -19,11 +19,11 @@ for media in in_pb.media:
         buf.type = 2
         res = str(latex(parse_expr(media.data.decode(encoding='utf-8'))))
         buf.data = res.encode(encoding='utf-8')
-        out_msg.medias.append(buf)
     else:
         buf.type == 2
         buf.data = "invalid type".encode(encoding='utf-8')
         buf.error = 1
+    out_msg.medias.append(buf)
 out_pb = cmdout_pb2.Output()
 out_pb.msgs.append(out_msg)
 stdout.buffer.write(out_pb.SerializeToString())
