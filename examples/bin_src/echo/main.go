@@ -52,7 +52,7 @@ func main() {
 				&pb.BotMsg{
 					Medias: []*pb.OutputMedia{
 						{
-							Data: in_pb.Media[0].Data,
+							Data: m.Data,
 							Type: pb.OutputMedia_UTF8,
 						},
 					},
