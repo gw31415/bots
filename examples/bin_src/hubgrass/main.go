@@ -11,6 +11,10 @@ import (
 	"github.com/gw31415/hubcontrib"
 )
 
+const (
+	svg_filename = "hubcontrib.svg"
+)
+
 func main() {
 
 	if len(os.Args) > 1 {
@@ -72,6 +76,7 @@ func main() {
 						{
 							Data: []byte(svg),
 							Type: pb.OutputMedia_FILE,
+							Filename: svg_filename,
 						},
 					},
 				},
