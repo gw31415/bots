@@ -137,6 +137,30 @@ var testCmd = &cobra.Command{
 					case pb.OutputMedia_UTF8:
 						fmt.Printf("UTF8: `%s`", string(media.Data))
 						fmt.Println()
+					case pb.OutputMedia_FILE:
+						if media.Filename == "" {
+							fmt.Println("File: BROKEN")
+							break
+						}
+						if _, err := os.Stat("./tmp"); os.IsNotExist(err) {
+							os.Mkdir("./tmp", 0755)
+						}
+						if err != nil {
+							fmt.Printf("File: (error) %s", err.Error())
+							fmt.Println()
+							break
+						}
+						file, err := os.OpenFile("./tmp/"+media.Filename, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
+						if err != nil {
+							fmt.Printf("File: (error) %s", err.Error())
+							fmt.Println()
+							break
+						}
+						if _, e := file.Write(media.Data); e != nil {
+							fmt.Printf("File: (error) %s", e.Error())
+						}
+						fmt.Printf("File: ./fmt/%s", media.Filename)
+						fmt.Println()
 					}
 				}
 				fmt.Println()
