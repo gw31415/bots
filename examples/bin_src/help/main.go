@@ -51,48 +51,31 @@ func main() {
 
 	medias := []*pb.OutputMedia{}
 
-	//文字列データを抽出して追加
+	wd, err := os.Executable()
+	if err != nil {
+		panic(err)
+	}
+	wd = filepath.Dir(wd)
+	cmd_names := []string{}
 	for _, m := range in_pb.Media {
 		if m.Type == pb.InputMedia_UTF8 {
 			for _, cmd := range strings.Fields(*(*string)(unsafe.Pointer(&m.Data))) {
-				wd, err := os.Executable()
-				wd = filepath.Dir(wd)
-				if err != nil {
-					panic(err)
-				}
-				cmd_path := fmt.Sprintf("%s/%s", wd, cmd)
-				botcmd := exec.Command(cmd_path, "-h")
-				out := bytes.NewBuffer([]byte{})
-				botcmd.Stdout = out
-				err = botcmd.Run()
-				if err != nil {
-					panic(err)
-				}
-				help_pb := &pb.Help{}
-				if err := proto.Unmarshal(out.Bytes(), help_pb); err != nil {
-					panic(err)
-				}
-				medias = append(medias,
-					&pb.OutputMedia{
-						Data:        []byte(cmd),
-						Type:        pb.OutputMedia_UTF8,
-						Level:       1,
-						ExtendField: true,
-					},
-					&pb.OutputMedia{
-						Data:        []byte(fmt.Sprintf("%s%s %s",in_pb.Prefix, cmd, help_pb.Usage)),
-						Type:        pb.OutputMedia_UTF8,
-						ExtendField: true,
-						ShortCode: true,
-					},
-					&pb.OutputMedia{
-						Data: []byte(help_pb.LongDescription),
-						Type: pb.OutputMedia_UTF8,
-					},
-				)
+				cmd_names = append(cmd_names, cmd)
 			}
-
 		} else {
+			cmd_names = append(cmd_names, "")
+		}
+	}
+	all := len(cmd_names) == 0
+	if all {
+		files, _ := ioutil.ReadDir(wd)
+		for _, f := range files {
+			cmd_names = append(cmd_names, f.Name())
+		}
+	}
+
+	for _, cmd := range cmd_names {
+		if cmd == "" {
 			medias = append(medias,
 				&pb.OutputMedia{
 					Data:        []byte("Error"),
@@ -107,6 +90,44 @@ func main() {
 					Error: 1,
 				},
 			)
+		} else {
+			cmd_path := fmt.Sprintf("%s/%s", wd, cmd)
+			botcmd := exec.Command(cmd_path, "-h")
+			out := bytes.NewBuffer([]byte{})
+			botcmd.Stdout = out
+			err = botcmd.Run()
+			if err != nil {
+				panic(err)
+			}
+			help_pb := &pb.Help{}
+			if err := proto.Unmarshal(out.Bytes(), help_pb); err != nil {
+				panic(err)
+			}
+			var description string
+			if all {
+				description = help_pb.ShortDescription
+			} else {
+				description = help_pb.LongDescription
+			}
+			medias = append(medias,
+				&pb.OutputMedia{
+					Data:        []byte(cmd),
+					Type:        pb.OutputMedia_UTF8,
+					Level:       1,
+					ExtendField: true,
+				},
+				&pb.OutputMedia{
+					Data:        []byte(fmt.Sprintf("%s%s %s", in_pb.Prefix, cmd, help_pb.Usage)),
+					Type:        pb.OutputMedia_UTF8,
+					ExtendField: true,
+					ShortCode:   true,
+				},
+				&pb.OutputMedia{
+					Data: []byte(description),
+					Type: pb.OutputMedia_UTF8,
+				},
+			)
+
 		}
 	}
 
