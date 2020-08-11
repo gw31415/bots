@@ -3,6 +3,9 @@ package proto;
 
 message Input {
   repeated InputMedia media = 1;
+
+  //prefixの文字列, help用
+  string prefix = 2;
 }
 
 message InputMedia {
@@ -22,7 +25,4 @@ message InputMedia {
 
   //タグナンバー：4から7 はcmdout/Mediaとの統合の可能性を考慮して確保しておく
   reserved 4 to 7;
-
-  //prefixの文字列, help用
-  string prefix = 8;
 }

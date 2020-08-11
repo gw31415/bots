@@ -83,6 +83,7 @@ var testCmd = &cobra.Command{
 
 			//文字列でメッセージをつくる
 			in_pb := &pb.Input{
+				Prefix: "[PREFIX]",
 				Media: []*pb.InputMedia{
 					{
 						Data: arg,
