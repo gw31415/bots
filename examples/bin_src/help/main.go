@@ -21,8 +21,8 @@ func main() {
 		if os.Args[1] == "-h" || os.Args[1] == "--help" {
 			help = pb.Help{
 				Usage:            "(CMD)",
-				ShortDescription: "Show help",
-				LongDescription:  "Show help",
+				ShortDescription: "Show helps",
+				LongDescription:  "Show helps that are installed.",
 			}
 		}
 

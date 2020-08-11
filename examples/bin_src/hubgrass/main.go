@@ -22,8 +22,8 @@ func main() {
 		if os.Args[1] == "-h" || os.Args[1] == "--help" {
 			help = pb.Help{
 				Usage:            "[ID]",
-				ShortDescription: "Show GitHub contribution graph",
-				LongDescription:  "Show year-long GitHub contribution graph",
+				ShortDescription: "Show the GitHub contribution graph",
+				LongDescription:  "Show year-long GitHub contribution graph.",
 			}
 		}
 

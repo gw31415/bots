@@ -6,8 +6,8 @@ if len(argv) > 1:
     if argv[1] == "--help" or argv[1] == "-h":
         hp = help_pb2.Help()
         hp.usage = "[expr]"
-        hp.short_description = "Parse expr of sympy"
-        hp.long_description = "Parse and simplify expr of sympy"
+        hp.short_description = "Call sympy"
+        hp.long_description = "Parse and simplify an expr of sympy."
         stdout.buffer.write(hp.SerializeToString())
         exit(0)
 stdin = stdin.buffer.read()
