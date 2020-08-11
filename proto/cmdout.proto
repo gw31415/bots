@@ -43,4 +43,8 @@ message OutputMedia{
   uint32 error = 6;
   //隠せるなら隠すかどうか
   bool spoiled = 7;
+  //短いコードブロックにできるならするかどうか
+  bool short_code = 8;
+  //長いコードブロックにできるならするかどうか
+  bool long_code = 9;
 }
