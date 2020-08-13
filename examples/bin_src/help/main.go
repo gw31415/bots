@@ -92,6 +92,10 @@ func main() {
 			)
 		} else {
 			cmd_path := fmt.Sprintf("%s/%s", wd, cmd)
+			fInfo, _ := os.Stat(cmd_path)
+			if fInfo.IsDir() {
+				cmd_path += "/" + cmd
+			}
 			botcmd := exec.Command(cmd_path, "-h")
 			out := bytes.NewBuffer([]byte{})
 			botcmd.Stdout = out
