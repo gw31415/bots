@@ -98,7 +98,18 @@ func (instance *Instance) SetUnaryService(bots *lib.BotsHandler, config UnarySer
 			}
 			out_pb, err := botscmd.Run(arg)
 			if err != nil { // 起動に失敗, または壊れている
-				return
+				out_pb = &proto.Output{}
+				out_pb.Msgs = []*proto.BotMsg{
+					{
+						Medias: []*proto.OutputMedia{
+							{
+								Error: 1,
+								Data: []byte(err.Error()),
+								Type: proto.OutputMedia_UTF8,
+							},
+						},
+					},
+				}
 			}
 			for _, msg := range out_pb.Msgs {
 				msg_list := config.style(msg, message)
@@ -124,6 +135,29 @@ func (instance *Instance) Close() error {
 
 // デフォルトのMessageEmbedStyleです.
 func MessageEmbedStyle_default(msg *proto.BotMsg, message *discordgo.MessageCreate) (sends []*discordgo.MessageSend) {
+	// ランタイムエラーの処理
+	defer func() {
+		var errmsg string
+		if err := recover(); err != nil {
+			switch err := err.(type) {
+			case error:
+				errmsg = err.Error()
+			default:
+				errmsg = fmt.Sprint(err)
+			}
+			sends = []*discordgo.MessageSend{
+				{
+					Embed: &discordgo.MessageEmbed{
+						Color:       0xff0000,
+						Description: "``` " + strings.ReplaceAll(errmsg, "```", " `` ") + " ```",
+						Title:       "不明なエラー",
+					},
+				},
+			}
+			return
+		}
+	}()
+
 	error_count := 0
 	send := &discordgo.MessageSend{}
 	embed := &discordgo.MessageEmbed{}
@@ -142,7 +176,7 @@ func MessageEmbedStyle_default(msg *proto.BotMsg, message *discordgo.MessageCrea
 					line = "\n"
 				}
 				line += str
-				if media.LongCode {
+				if media.LongCode || media.Error != 0 {
 					line = fmt.Sprintf("```\n%s\n```", strings.ReplaceAll(line, "```", " `` "))
 				} else if media.ShortCode {
 					qs := []rune{}
@@ -174,11 +208,11 @@ func MessageEmbedStyle_default(msg *proto.BotMsg, message *discordgo.MessageCrea
 				media.Filename = media.Filename[:len(media.Filename)-3] + "jpg"
 			}
 		}
-		if i+1 == len(msg.Medias) || !media.ExtendField {
+		if i+1 == len(msg.Medias) || !media.ExtendField || media.Error != 0 {
 			embed.Fields = append(embed.Fields, field)
 			field = &discordgo.MessageEmbedField{}
 		}
-		if i+1 == len(msg.Medias) || media.Type == proto.OutputMedia_FILE {
+		if i+1 == len(msg.Medias) || media.Type == proto.OutputMedia_FILE || media.Error != 0 {
 			if len(embed.Fields) == 1 && embed.Fields[0].Name == "" {
 				embed.Description = embed.Fields[0].Value
 				embed.Fields = []*discordgo.MessageEmbedField{}
@@ -190,6 +224,10 @@ func MessageEmbedStyle_default(msg *proto.BotMsg, message *discordgo.MessageCrea
 				}
 			}
 			embed.Color = int(msg.Color & 0x00ffffff)
+			if media.Error != 0 {
+				embed.Title = "Error"
+				embed.Color = 0xff0000
+			}
 			author := &discordgo.MessageEmbedAuthor{}
 			author.Name = message.Message.Author.Username
 			author.IconURL = message.Author.AvatarURL("")

@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"unsafe"
 
 	"github.com/golang/protobuf/proto"
 	pb "github.com/gw31415/bots/proto"
@@ -79,7 +80,9 @@ func (handler *BotsHandler) GetCommand(cmd_name string) (*Command, error) {
 func (cmd *Command) Run(in_pb *pb.Input) (*pb.Output, error) {
 	stdin, err := cmd.ex.StdinPipe()
 	out := bytes.NewBuffer([]byte{})
+	stderr := bytes.NewBuffer([]byte{})
 	cmd.ex.Stdout = out
+	cmd.ex.Stderr = stderr
 	if err != nil {
 		return nil, err
 	}
@@ -93,7 +96,8 @@ func (cmd *Command) Run(in_pb *pb.Input) (*pb.Output, error) {
 	stdin.Write(data)
 	stdin.Close()
 	if err := cmd.ex.Wait(); err != nil {
-		return nil, err
+		bye := stderr.Bytes()
+		return nil, errors.New(fmt.Sprintf("%s\n%s", *(*string)(unsafe.Pointer(&bye)), err.Error()))
 	}
 	msg_pb := &pb.Output{}
 	if err := proto.Unmarshal(out.Bytes(), msg_pb); err != nil {
