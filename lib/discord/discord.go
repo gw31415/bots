@@ -4,7 +4,12 @@ Discord用のbotsクライアントです.
 package discord
 
 import (
+	"bytes"
 	"fmt"
+	"image"
+	"image/png"
+	"io"
+	"path/filepath"
 	"strings"
 	"unicode"
 	"unsafe"
@@ -12,6 +17,8 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/gw31415/bots/lib"
 	"github.com/gw31415/bots/proto"
+	"github.com/srwiley/oksvg"
+	"github.com/srwiley/rasterx"
 )
 
 // Discordの一つのセッションに対処するインスタンスです.
@@ -62,26 +69,15 @@ func Preprocessor_prefix(prefix string) MessagePreprocessor {
 }
 
 // BotMsgとmessageのデータからmessageを作る関数を表します.
-type MessageStyle func(pb_out *proto.BotMsg, message_data *discordgo.MessageCreate) (embed []string)
-
-// BotMsgとmessageのデータからembed_messageを作る関数を表します.
-type MessageEmbedStyle func(pb_out *proto.BotMsg, message_data *discordgo.MessageCreate) (embed []*discordgo.MessageEmbed)
+type MessageStyle func(pb_out *proto.BotMsg, message_data *discordgo.MessageCreate) (message []*discordgo.MessageSend)
 
 // 1メッセージ1レスポンスのサービスを表します
 type UnaryServiceConfig struct {
 	preprocessor MessagePreprocessor
-	eStyle       MessageEmbedStyle
 	style        MessageStyle
 }
 
-// Embedメッセージを返すようなUnaryServiceを返します.
-func NewEmbedUnaryServiceConfig(preprocessor MessagePreprocessor, style MessageEmbedStyle) (config UnaryServiceConfig) {
-	config.preprocessor = preprocessor
-	config.eStyle = style
-	return
-}
-
-// テキストメッセージを返すようなUnaryServiceを返します.
+// メッセージを返すようなUnaryServiceを返します.
 func NewUnaryServiceConfig(preprocessor MessagePreprocessor, style MessageStyle) (config UnaryServiceConfig) {
 	config.preprocessor = preprocessor
 	config.style = style
@@ -104,19 +100,10 @@ func (instance *Instance) SetUnaryService(bots *lib.BotsHandler, config UnarySer
 			if err != nil { // 起動に失敗, または壊れている
 				return
 			}
-			if config.style == nil { // Embedメッセージを返すとき
-				for _, msg := range out_pb.Msgs {
-					msg_list := config.eStyle(msg, message)
-					for _, m := range msg_list {
-						session.ChannelMessageSendEmbed(message.ChannelID, m)
-					}
-				}
-			} else { // テキストメッセージを返すとき
-				for _, msg := range out_pb.Msgs {
-					msg_list := config.style(msg, message)
-					for _, m := range msg_list {
-						session.ChannelMessageSend(message.ChannelID, m)
-					}
+			for _, msg := range out_pb.Msgs {
+				msg_list := config.style(msg, message)
+				for _, m := range msg_list {
+					session.ChannelMessageSendComplex(message.ChannelID, m)
 				}
 			}
 		}
@@ -136,9 +123,11 @@ func (instance *Instance) Close() error {
 }
 
 // デフォルトのMessageEmbedStyleです.
-func MessageEmbedStyle_default(msg *proto.BotMsg, message *discordgo.MessageCreate) (embeds []*discordgo.MessageEmbed) {
+func MessageEmbedStyle_default(msg *proto.BotMsg, message *discordgo.MessageCreate) (sends []*discordgo.MessageSend) {
 	error_count := 0
+	send := &discordgo.MessageSend{}
 	embed := &discordgo.MessageEmbed{}
+	send.Embed = embed
 	field := &discordgo.MessageEmbedField{}
 	for i, media := range msg.Medias {
 		if media.Error != 0 {
@@ -171,11 +160,18 @@ func MessageEmbedStyle_default(msg *proto.BotMsg, message *discordgo.MessageCrea
 					}
 					line += string(qs)
 				} else if media.Spoiled {
-					line = "||" + strings.ReplaceAll(line, "||", "\\|\\|")
+					line = "||" + strings.ReplaceAll(line, "||", "\\|\\|") + "||"
 				}
 				field.Value += line
 			} else {
 				field.Name = str
+			}
+		case proto.OutputMedia_FILE:
+			if filepath.Ext(media.Filename) == ".svg" {
+				bf := bytes.NewBuffer(media.Data)
+				svg, _ := svg2jpg(bf)
+				media.Data = svg.Bytes()
+				media.Filename = media.Filename[:len(media.Filename)-3] + "jpg"
 			}
 		}
 		if i+1 == len(msg.Medias) || !media.ExtendField {
@@ -199,13 +195,23 @@ func MessageEmbedStyle_default(msg *proto.BotMsg, message *discordgo.MessageCrea
 			author.IconURL = message.Author.AvatarURL("")
 			embed.Author = author
 			if media.Type == proto.OutputMedia_FILE {
-			} else {
-				embeds = append(embeds, embed)
-				embed = &discordgo.MessageEmbed{}
+				file := &discordgo.File{}
+				send.File = file
+				file.Reader = bytes.NewBuffer(media.Data)
+				file.Name = media.Filename
+				ext := filepath.Ext(media.Filename)
+				if ext == ".png" || ext == ".jpg" || ext == ".jpeg" {
+					image := &discordgo.MessageEmbedImage{}
+					image.URL = fmt.Sprintf("attachment://%s", file.Name)
+					embed.Image = image
+				}
 			}
+			sends = append(sends, send)
+			send = &discordgo.MessageSend{}
+			embed = &discordgo.MessageEmbed{}
 		}
 	}
-	return embeds
+	return sends
 }
 
 func count_bquates(st string) int {
@@ -222,4 +228,24 @@ func count_bquates(st string) int {
 		}
 	}
 	return mx
+}
+
+func svg2jpg(svg io.Reader) (jpg *bytes.Buffer, err error) {
+	icon, err := oksvg.ReadIconStream(svg)
+	if err != nil {
+		return nil, err
+	}
+	const (
+		w = 800
+		h = 128
+	)
+	icon.SetTarget(0, 0, float64(w), float64(h))
+	rgba := image.NewRGBA(image.Rect(0, 0, w, h))
+	icon.Draw(rasterx.NewDasher(w, h, rasterx.NewScannerGV(w, h, rgba, rgba.Bounds())), 1)
+	jpg = bytes.NewBuffer([]byte{})
+	err = png.Encode(jpg, rgba)
+	if err != nil {
+		return nil, err
+	}
+	return
 }
