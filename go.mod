@@ -15,6 +15,7 @@ require (
 	github.com/gw31415/hubcontrib v0.0.0-20200808150303-76369d9e1f9f
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/imdario/mergo v0.3.10 // indirect
+	github.com/mathlava/bigc v0.0.1
 	github.com/mitchellh/copystructure v1.0.0 // indirect
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/mitchellh/mapstructure v1.3.3 // indirect
