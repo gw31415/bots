@@ -92,6 +92,7 @@ func (instance *Instance) SetUnaryService(bots *lib.BotsHandler, config UnarySer
 		}
 		match, cmd, arg := config.preprocessor(message.Content)
 		if match {
+			go session.ChannelTyping(message.ChannelID)
 			botscmd, err := bots.GetCommand(cmd)
 			if err != nil { // 見つからない, または壊れている
 				return
@@ -104,8 +105,8 @@ func (instance *Instance) SetUnaryService(bots *lib.BotsHandler, config UnarySer
 						Medias: []*proto.OutputMedia{
 							{
 								Error: 1,
-								Data: []byte(err.Error()),
-								Type: proto.OutputMedia_UTF8,
+								Data:  []byte(err.Error()),
+								Type:  proto.OutputMedia_UTF8,
 							},
 						},
 					},
