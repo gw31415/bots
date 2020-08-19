@@ -3,3 +3,6 @@ examples/botcli/botcli
 **/__pycache__
 **/.vscode
 examples/botcli/tmp
+handlers/discord/amabot/amabot
+handlers/discord/amabot/bin
+**/.env
