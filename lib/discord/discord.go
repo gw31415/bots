@@ -92,11 +92,11 @@ func (instance *Instance) SetUnaryService(bots *lib.BotsHandler, config UnarySer
 		}
 		match, cmd, arg := config.preprocessor(message.Content)
 		if match {
-			go session.ChannelTyping(message.ChannelID)
 			botscmd, err := bots.GetCommand(cmd)
 			if err != nil { // 見つからない, または壊れている
 				return
 			}
+			go session.ChannelTyping(message.ChannelID)
 			out_pb, err := botscmd.Run(arg)
 			if err != nil { // 起動に失敗, または壊れている
 				out_pb = &proto.Output{}
