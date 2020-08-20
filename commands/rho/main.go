@@ -56,8 +56,8 @@ func main() {
 		if os.Args[1] == "-h" || os.Args[1] == "--help" {
 			help := pb.Help{
 				Usage:            "[Numbers]",
-				ShortDescription: "ポラード・ロー法",
-				LongDescription:  "ポラード・ロー法",
+				ShortDescription: "素因数分解します",
+				LongDescription:  "ポラード・ロー法を利用した素因数分解をします.",
 			}
 
 			//シリアライズしてバイト列にする
@@ -104,6 +104,12 @@ func main() {
 				}
 				buf = append(buf, list[len(list)-1].String()...)
 				result = append(result,
+				&pb.OutputMedia{
+						Type: pb.OutputMedia_UTF8,
+						Data: []byte(num_str),
+						ExtendField: true,
+						Level: 1,
+				},
 					&pb.OutputMedia{
 						Type: pb.OutputMedia_UTF8,
 						Data: buf,
