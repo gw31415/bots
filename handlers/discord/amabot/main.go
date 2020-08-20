@@ -15,7 +15,7 @@ func main() {
 	// .env
 	if len(os.Args) == 1 {
 		if err := godotenv.Load(); err != nil {
-			panic(err)
+			fmt.Println("info: " + err.Error())
 		}
 	} else {
 		if err := godotenv.Load(os.Args[1:]...); err != nil {
