@@ -11,6 +11,7 @@ import (
 	"io"
 	"path/filepath"
 	"strings"
+	"time"
 	"unicode"
 	"unsafe"
 
@@ -75,12 +76,14 @@ type MessageStyle func(pb_out *proto.BotMsg, message_data *discordgo.MessageCrea
 type UnaryServiceConfig struct {
 	preprocessor MessagePreprocessor
 	style        MessageStyle
+	Timeout      time.Duration
 }
 
 // メッセージを返すようなUnaryServiceを返します.
 func NewUnaryServiceConfig(preprocessor MessagePreprocessor, style MessageStyle) (config UnaryServiceConfig) {
 	config.preprocessor = preprocessor
 	config.style = style
+	config.Timeout = 5 * time.Second
 	return
 }
 
@@ -96,21 +99,56 @@ func (instance *Instance) SetUnaryService(bots *lib.BotsHandler, config UnarySer
 			if err != nil { // 見つからない, または壊れている
 				return
 			}
-			go session.ChannelTyping(message.ChannelID)
-			out_pb, err := botscmd.Run(arg)
-			if err != nil { // 起動に失敗, または壊れている
-				out_pb = &proto.Output{}
-				out_pb.Msgs = []*proto.BotMsg{
-					{
-						Medias: []*proto.OutputMedia{
-							{
-								Error: 1,
-								Data:  []byte(err.Error()),
-								Type:  proto.OutputMedia_UTF8,
+			session.ChannelTyping(message.ChannelID)
+			done := make(chan *proto.Output, 1)
+			go func() {
+				out_pb, err := botscmd.Run(arg)
+				if err != nil {
+					out_pb = &proto.Output{}
+					out_pb.Msgs = []*proto.BotMsg{
+						{
+							Medias: []*proto.OutputMedia{
+								{
+									Error: 1,
+									Data:  []byte(err.Error()),
+									Type:  proto.OutputMedia_UTF8,
+								},
 							},
 						},
-					},
+					}
 				}
+				done <- out_pb
+			}()
+			out_pb := &proto.Output{}
+			select {
+			case <-time.After(config.Timeout):
+				if err := botscmd.Kill(); err != nil {
+					out_pb.Msgs = []*proto.BotMsg{
+						{
+							Medias: []*proto.OutputMedia{
+								{
+									Error: 1,
+									Data:  []byte(err.Error()),
+									Type:  proto.OutputMedia_UTF8,
+								},
+							},
+						},
+					}
+				} else {
+					out_pb.Msgs = []*proto.BotMsg{
+						{
+							Medias: []*proto.OutputMedia{
+								{
+									Error: 1,
+									Data:  []byte("timeout."),
+									Type:  proto.OutputMedia_UTF8,
+								},
+							},
+						},
+					}
+				}
+			case pb := <-done:
+				out_pb = pb
 			}
 			for _, msg := range out_pb.Msgs {
 				msg_list := config.style(msg, message)

@@ -76,6 +76,11 @@ func (handler *BotsHandler) GetCommand(cmd_name string) (*Command, error) {
 	}, nil
 }
 
+// コマンドを中止します
+func (cmd *Command) Kill() error {
+	return cmd.ex.Process.Kill()
+}
+
 // コマンドを起動します
 func (cmd *Command) Run(in_pb *pb.Input) (*pb.Output, error) {
 	stdin, err := cmd.ex.StdinPipe()
