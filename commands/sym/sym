@@ -8,6 +8,7 @@ if len(argv) > 1:
         hp.usage = "[expr]"
         hp.short_description = "Call sympy"
         hp.long_description = "Parse and simplify an expr of sympy."
+        hp.source_url = "https://github.com/gw31415/bots/tree/master/commands/sym"
         stdout.buffer.write(hp.SerializeToString())
         exit(0)
 stdin = stdin.buffer.read()

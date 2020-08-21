@@ -18,6 +18,7 @@ func main() {
 				Usage:            "[式]",
 				ShortDescription: "計算をします",
 				LongDescription:  "実部と虚部が有理数であるような複素数の四則演算を行います.",
+				SourceUrl:        "https://github.com/gw31415/bots/tree/master/commands/calc",
 			}
 		}
 

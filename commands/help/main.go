@@ -22,7 +22,8 @@ func main() {
 			help = pb.Help{
 				Usage:            "(CMD)",
 				ShortDescription: "Show helps",
-				LongDescription:  "Show helps that are installed.",
+				LongDescription:  "Show helps of installed commands.",
+				SourceUrl:        "https://github.com/gw31415/bots/tree/master/commands/help",
 			}
 		}
 

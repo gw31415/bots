@@ -58,6 +58,7 @@ func main() {
 				Usage:            "[Numbers]",
 				ShortDescription: "素因数分解します",
 				LongDescription:  "ポラード・ロー法を利用した素因数分解をします.",
+				SourceUrl:        "https://github.com/gw31415/bots/tree/master/commands/rho",
 			}
 
 			//シリアライズしてバイト列にする

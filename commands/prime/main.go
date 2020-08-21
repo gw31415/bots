@@ -21,7 +21,8 @@ func main() {
 			help := pb.Help{
 				Usage:            "[Numbers]",
 				ShortDescription: "Prime checking",
-				LongDescription:  "Check whether the given numbers are prime or not.",
+				LongDescription:  "素数判定を行います.",
+				SourceUrl:        "https://github.com/gw31415/bots/tree/master/commands/prime",
 			}
 
 			//シリアライズしてバイト列にする

@@ -15,8 +15,9 @@ func main() {
 		if os.Args[1] == "-h" || os.Args[1] == "--help" {
 			help = pb.Help{
 				Usage:            "[MESSAGE]",
-				ShortDescription: "Echo messages",
-				LongDescription:  "Repeat gived messages.",
+				ShortDescription: "Echo msg",
+				LongDescription:  "テキストメッセージのオウム返しをします.",
+				SourceUrl:        "https://github.com/gw31415/bots/tree/master/commands/echo",
 			}
 		}
 

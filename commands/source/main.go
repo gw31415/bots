@@ -52,6 +52,7 @@ func main() {
 				Usage:            "[CMD]",
 				ShortDescription: "Source url",
 				LongDescription:  "ソースコードのURLを返します.",
+				SourceUrl:        "https://github.com/gw31415/bots/tree/master/commands/source",
 			}
 		}
 

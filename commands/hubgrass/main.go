@@ -24,6 +24,7 @@ func main() {
 				Usage:            "[ID]",
 				ShortDescription: "Show the GitHub contribution graph",
 				LongDescription:  "Show year-long GitHub contribution graph.",
+				SourceUrl:        "https://github.com/gw31415/bots/tree/master/commands/hubcontrib",
 			}
 		}
 

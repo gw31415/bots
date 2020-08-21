@@ -79,6 +79,7 @@ func main() {
 				Usage:            "[Numbers]",
 				ShortDescription: "最大公約数",
 				LongDescription:  "与えられた正の整数の最大公約数を返します.",
+				SourceUrl:        "https://github.com/gw31415/bots/tree/master/commands/gcd",
 			}
 
 			//シリアライズしてバイト列にする

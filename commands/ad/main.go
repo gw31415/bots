@@ -3,14 +3,13 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"math/big"
 	"os"
 	"strings"
 
 	"github.com/golang/protobuf/proto"
 	pb "github.com/gw31415/bots/proto"
-	"github.com/mathlava/bigc/math/rho"
 	"github.com/mathlava/bigc"
+	"github.com/mathlava/bigc/math/rho"
 )
 
 func main() {
@@ -49,6 +48,7 @@ func main() {
 				Usage:            "[Numbers]",
 				ShortDescription: "素微分します",
 				LongDescription:  "素微分をします.",
+				SourceUrl:        "https://github.com/gw31415/bots/tree/master/commands/ad",
 			}
 
 			//シリアライズしてバイト列にする
