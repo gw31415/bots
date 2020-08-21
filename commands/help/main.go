@@ -15,6 +15,35 @@ import (
 )
 
 func main() {
+	defer func() {
+		if err := recover(); err != nil {
+			var errmsg string
+			switch err := err.(type) {
+			case error:
+				errmsg = err.Error()
+			case string:
+				errmsg = err
+			default:
+				errmsg = fmt.Sprint(err)
+			}
+			out_pb := &pb.Output{
+				Msgs: []*pb.BotMsg{
+					{
+						Medias: []*pb.OutputMedia{
+							{
+								Type:  pb.OutputMedia_UTF8,
+								Data:  []byte(errmsg),
+								Error: 1,
+							},
+						},
+					},
+				},
+			}
+			//シリアライズしてバイト列にする
+			out, _ := proto.Marshal(out_pb)
+			os.Stdout.Write(out)
+		}
+	}()
 
 	if len(os.Args) > 1 {
 		var help pb.Help
@@ -102,11 +131,11 @@ func main() {
 			botcmd.Stdout = out
 			err = botcmd.Run()
 			if err != nil {
-				panic(err)
+				continue
 			}
 			help_pb := &pb.Help{}
 			if err := proto.Unmarshal(out.Bytes(), help_pb); err != nil {
-				panic(err)
+				continue
 			}
 			var description string
 			if all {
