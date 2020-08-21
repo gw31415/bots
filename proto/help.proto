@@ -8,4 +8,6 @@ message Help {
   string short_description = 2;
   //長い説明
   string long_description = 3;
+  //ソースのurl
+  string source_url = 4;
 }
