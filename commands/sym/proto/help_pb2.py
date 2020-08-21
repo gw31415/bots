@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\nhelp.proto\x12\x05proto\"^\n\x04Help\x12\r\n\x05usage\x18\x01 \x01(\t\x12\x19\n\x11short_description\x18\x02 \x01(\t\x12\x18\n\x10long_description\x18\x03 \x01(\t\x12\x12\n\nsource_url\x18\x04 \x01(\tb\x06proto3'
+  serialized_pb=b'\n\nhelp.proto\x12\x05proto\"J\n\x04Help\x12\r\n\x05usage\x18\x01 \x01(\t\x12\x19\n\x11short_description\x18\x02 \x01(\t\x12\x18\n\x10long_description\x18\x03 \x01(\tb\x06proto3'
 )
 
 
@@ -54,13 +54,6 @@ _HELP = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='source_url', full_name='proto.Help.source_url', index=3,
-      number=4, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -74,7 +67,7 @@ _HELP = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=21,
-  serialized_end=115,
+  serialized_end=95,
 )
 
 DESCRIPTOR.message_types_by_name['Help'] = _HELP
