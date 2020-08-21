@@ -104,12 +104,12 @@ func main() {
 				}
 				buf = append(buf, list[len(list)-1].String()...)
 				result = append(result,
-				&pb.OutputMedia{
-						Type: pb.OutputMedia_UTF8,
-						Data: []byte(num_str),
+					&pb.OutputMedia{
+						Type:        pb.OutputMedia_UTF8,
+						Data:        []byte(num_str),
 						ExtendField: true,
-						Level: 1,
-				},
+						Level:       1,
+					},
 					&pb.OutputMedia{
 						Type: pb.OutputMedia_UTF8,
 						Data: buf,
