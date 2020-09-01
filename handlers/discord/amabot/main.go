@@ -5,9 +5,10 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
-	"github.com/gw31415/bots/lib/discord"
 	"github.com/gw31415/bots/lib"
+	"github.com/gw31415/bots/lib/discord"
 	"github.com/joho/godotenv"
 )
 
@@ -38,6 +39,7 @@ func main() {
 	preprocessor := discord.Preprocessor_prefix(os.Getenv("PREFIX"))
 	style := discord.MessageEmbedStyle_default
 	config := discord.NewUnaryServiceConfig(preprocessor, style)
+	config.Timeout = time.Second * 10
 	// UnaryServiceを設定
 	instance.SetUnaryService(bots, config)
 

@@ -14,6 +14,7 @@ require (
 	github.com/golang/protobuf v1.4.2
 	github.com/google/uuid v1.1.1 // indirect
 	github.com/gw31415/hubcontrib v0.0.0-20200808150303-76369d9e1f9f
+	github.com/gw31415/texc v0.0.0-20200831073854-798fece559a4
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/imdario/mergo v0.3.10 // indirect
 	github.com/joho/godotenv v1.3.0
@@ -25,7 +26,6 @@ require (
 	github.com/mwitkow/go-proto-validators v0.3.0 // indirect
 	github.com/pelletier/go-toml v1.8.0 // indirect
 	github.com/pseudomuto/protoc-gen-doc v1.3.2 // indirect
-	github.com/spf13/afero v1.3.3 // indirect
 	github.com/spf13/cast v1.3.1 // indirect
 	github.com/spf13/cobra v1.0.0
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
@@ -34,9 +34,9 @@ require (
 	github.com/srwiley/oksvg v0.0.0-20200311192757-870daf9aa564
 	github.com/srwiley/rasterx v0.0.0-20200120212402-85cb7272f5e9
 	golang.org/x/crypto v0.0.0-20200709230013-948cd5f35899 // indirect
-	golang.org/x/sys v0.0.0-20200805065543-0cf7623e9dbd // indirect
+	golang.org/x/sys v0.0.0-20200831180312-196b9ba8737a // indirect
 	golang.org/x/text v0.3.3 // indirect
-	google.golang.org/genproto v0.0.0-20200724131911-43cab4749ae7 // indirect
+	google.golang.org/genproto v0.0.0-20200901141002-b3bf27a9dbd1 // indirect
+	google.golang.org/grpc v1.31.1
 	google.golang.org/protobuf v1.25.0
-	gopkg.in/ini.v1 v1.57.0 // indirect
 )
