@@ -149,10 +149,10 @@ func main() {
 				Exec: []string{"pdfcrop", "--margins", "20", "bot.pdf", "bot.pdf"},
 			})
 			stream.Send(&texc_pb.Input{
-				Exec: []string{"bash", "-c", "pdftoppm -singlefile -jpeg -r 400 bot.pdf > bot.jpeg"},
+				Exec: []string{"pdftoppm", "-singlefile", "-jpeg", "-r", "400", "bot.pdf", "bot"},
 			})
 			stream.Send(&texc_pb.Input{
-				Dl: "bot.jpeg",
+				Dl: "bot.jpg",
 			})
 			stream.CloseSend()
 			stdout := bytes.NewBufferString("")
