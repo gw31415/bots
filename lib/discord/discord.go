@@ -51,6 +51,7 @@ func Preprocessor_prefix(prefix string) MessagePreprocessor {
 			return false, "", nil
 		}
 		msg = msg[len(prefix):]
+		msg = dismissComments(msg)
 		if unicode.IsSpace([]rune(msg)[0]) {
 			return false, "", nil
 		}
@@ -289,6 +290,18 @@ func MessageEmbedStyle_default(msg *proto.BotMsg, message *discordgo.MessageCrea
 		}
 	}
 	return sends
+}
+
+func dismissComments(input string) string {
+	out := new(strings.Builder)
+	for _, l := range strings.Split(input, "\n") {
+		if len(l) >= 3 && l[:3] == "```" {
+			continue
+		}
+		out.WriteString(l)
+		out.WriteRune('\n')
+	}
+	return out.String()
 }
 
 func count_bquates(st string) int {
