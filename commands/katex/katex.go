@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"os"
 	"os/exec"
+	"unsafe"
 )
 
 const (
@@ -36,7 +37,7 @@ func katex(math string) (*os.File, error) {
 		if err != nil {
 			return nil, err
 		}
-		return nil, errors.New(string(errmsg))
+		return nil, errors.New(*(*string)(unsafe.Pointer(&errmsg)))
 	case 200:
 		break
 	default:
