@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	TEMP_FILE = "/tmp/%x.png"
+	TEMP_FILE = "/dev/shm/%x.png"
 	URL       = "https://render-katex.herokuapp.com/tex/"
 )
 
